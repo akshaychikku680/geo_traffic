@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Severity Prediction</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/home">Map</a>
+        <!-- <a href="/da">Data</a> -->
+    </nav>
+
+    <form action="/predict" method="POST">
+        <h1>Traffic Severity Prediction</h1>
+        <label for="Type Road">Type Road:</label>
+        <select name="Type Road" id="Type Road">
+            <option value="">------ Select Type Road ------</option>
+            <option value="National Highway">National Highway</option>
+            <option value="State Highway">State Highway</option>
+            <option value="Other Road">Other Road</option>
+            <option value="ODR">Other District Road</option>
+            <option value="Bypass">Bypass</option>
+            <option value="MDR">Major District Road</option>
+        </select><br>
+        
+        <label for="Road Features">Road Feature:</label>
+        <select name="Road Features" id="Road Features">
+            <option value="">------ Select Road Feature ------</option>
+            <option value="Straight Road">Straight Road</option>
+            <option value="Curved Road">Curved Road</option>
+            <option value="Others">Others</option>
+            <option value="Ongoing Road Works/Under Construction">Ongoing Road Works</option>
+            <option value="Bridge">Bridge</option>
+            <option value="Steep Grade">Steep Grade</option>
+            <option value="Culvert">Culvert</option>
+            <option value="Pot Holes">Pot Holes</option>
+        </select><br>
+
+        <label for="Traffic Control">Traffic Control:</label>
+        <select name="Traffic Control" id="Traffic Control">
+            <option value="">------ Select Traffic Control ------</option>
+            <option value="Uncontrolled">Uncontrolled</option>
+            <option value="Police controlled">Police controlled</option>
+            <option value="Flashing signal/blinker">Flashing signal</option>
+            <option value="Traffic light signal">Traffic light signal</option>
+            <option value="Stop sign">Stop sign</option>
+        </select><br>
+
+        <label for="Type Area">Type Area:</label>
+        <select name="Type Area" id="Type Area">
+            <option value="">------ Select Type Area ------</option>
+            <option value="Rural">Rural</option>
+            <option value="Urban">Urban</option>
+        </select><br>
+
+        <label for="Time Accident">Time Accident:</label>
+        <select name="Time Accident" id="Time Accident">
+            <option value="">------ Select Time Accident ------</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Night">Night</option>
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+        </select><br>
+
+        <label for="Weather">Weather:</label>
+        <select name="Weather" id="Weather">
+            <option value="">------ Select Weather ------</option>
+            <option value="Sunny/Clear">Sunny/Clear</option>
+            <option value="Mist/Fog">Mist/Fog</option>
+            <option value="Very Hot">Very Hot</option>
+            <option value="Cloudy">Cloudy</option>
+            <option value="Snow">Snow</option>
+            <option value="Light rain">Light rain</option>
+            <option value="Heavy rain">Heavy rain</option>
+            <option value="Dust Storm">Dust Storm</option>
+            <option value="Hail/Sleet">Hail/Sleet</option>
+            <option value="Very Cold">Very Cold</option>
+        </select><br>
+
+        <label for="Collision">Collision:</label>
+        <select name="Collision" id="Collision">
+            <option value="">------ Select Collision ------</option>
+            <option value="Hit from Back">Hit from Back</option>
+            <option value="Hit Pedestrian">Hit Pedestrian</option>
+            <option value="Hit from Side">Hit from Side</option>
+            <option value="Hit and run">Hit and run</option>
+            <option value="Right-angled collision">Right-angled collision</option>
+            <option value="Other">Other</option>
+            <option value="Head on Collision">Head on Collision</option>
+            <option value="Right turn collision">Right turn collision</option>
+            <option value="Rear end collision">Rear end collision</option>
+            <option value="Overturn">Overturn</option>
+            <option value="Run off the Road">Right turn collision</option>
+            <option value="With parked vehicle">With parked vehicle</option>
+            <option value="Skidding">Skidding</option>
+            <option value="Collision brush/side swipe">side swipe</option>
+            <option value="Hit Fix / Stationary Object">Stationary Object</option>
+            <option value="With animal">With animal'</option>
+        </select><br>
+
+        <label for="District">District:</label>
+        <select id="District" name="District" onchange="updatePSNames(this.value)">
+            <option value="">------ Select District ------</option>
+            {% for district in district_data.keys() %}
+                <option value="{{ district }}">{{ district }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="PS Name">PoliceStation Name:</label>
+        <select id="PS Name" name="PS Name">
+            <option value="">------ Select PS Name ------</option>
+        </select><br>
+
+        <script>
+            const districtData = {{ district_data|tojson }};
+           
+            function updatePSNames(selectedDistrict) {
+                const psDropdown = document.getElementById("PS Name");
+                psDropdown.innerHTML = "<option value=''>Select PS Name</option>";
+                if (selectedDistrict in districtData) {
+                    districtData[selectedDistrict].forEach(function(ps) {
+                        const option = document.createElement("option");
+                        option.value = ps;
+                        option.text = ps;
+                        psDropdown.appendChild(option);
+                    });
+                }
+            }
+        </script>
+        
+        <button type="submit">Predict</button>
+</form>
+</body>
+</html>

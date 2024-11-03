@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kerala Traffic Updates by District</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<style>
+    body {
+    padding-top: 50px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+header {
+    width: 100%;
+    background-color: #00796b;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.5em;
+}
+.content {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+}
+.section {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.section h2 {
+    color: #00796b;
+    margin-bottom: 10px;
+}
+.traffic-status, .accidents, .tips, .map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.traffic-item, .accident-item {
+    display: flex;
+    align-items: center;
+    background: #e0f7fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 0;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 1.1em;
+}
+.traffic-item i, .accident-item i {
+    margin-right: 10px;
+    font-size: 1.5em;
+}
+.map-container {
+    width: 100%;
+}
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+}
+.district-selector {
+    margin: 10px 0;
+    font-size: 1em;
+    padding: 8px;
+}
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; 
+    padding: 10px 0;
+    display: flex;
+    justify-content: right; 
+    gap: 20px; 
+    z-index: 1000; 
+}
+nav a {
+    color: white; 
+    text-decoration: none; 
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s; 
+}
+nav a:hover {
+    background-color: #555; 
+}
+</style>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <!-- <a href="/da">Data</a> -->
+    </nav>
+
+<header>Kerala Traffic Updates by District</header>
+
+<div class="content">
+    <div class="section">
+        <label for="district-select">Select District:</label>
+        <select id="district-select" class="district-selector" onchange="updateDistrictData()">
+            <option value="default" selected>Select a district</option>
+            <option value="Trivandrum">Trivandrum</option>
+            <option value="Kollam">Kollam</option>
+            <option value="Pathanamthitta">Pathanamthitta</option>
+            <option value="Alappuzha">Alappuzha</option>
+            <option value="Kottayam">Kottayam</option>
+            <option value="Idukki">Idukki</option>
+            <option value="Ernakulam">Ernakulam</option>
+            <option value="Thrissur">Thrissur</option>
+            <option value="Palakkad">Palakkad</option>
+            <option value="Malappuram">Malappuram</option>
+            <option value="Kozhikode">Kozhikode</option>
+            <option value="Wayanad">Wayanad</option>
+            <option value="Kannur">Kannur</option>
+            <option value="Kasaragod">Kasaragod</option>
+        </select>
+    </div>
+
+    <!-- Traffic Status Section -->
+    <div class="section traffic-status">
+        <h2>Traffic Now</h2>
+        <div id="traffic-data">Select a district to view traffic information.</div>
+    </div>
+
+    <!-- Accident Data Section -->
+    <div class="section accidents">
+        <h2>Where Accidents Happen</h2>
+        <div id="accident-data">Select a district to view accident data.</div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="section map-container">
+        <h2>Traffic Map</h2>
+        <div id="map"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Initialize map
+    const map = L.map('map').setView([10.8505, 76.2711], 7); // Default view of Kerala
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Data for each district
+    const districtData = {
+        "Trivandrum": {
+            traffic: [{ location: "Main Road", status: "Smooth", color: "green" }],
+            accidents: [{ location: "Highway 66", incidents: "3 Accidents this month" }],
+            mapCenter: [8.5241, 76.9366]
+        },
+        "Kollam": {
+            traffic: [{ location: "Beach Road", status: "Heavy", color: "red" }],
+            accidents: [{ location: "NH 66", incidents: "1 Accident this month" }],
+            mapCenter: [8.8932, 76.6141]
+        },
+        "Pathanamthitta": {
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [9.2646, 76.7870]
+        },
+        "Alappuzha": { 
+            traffic: [{ location: "There are currently no alerts in the selected zone.", status: "Smooth", color: "green" }],
+            accidents: [{ location: "traffic jams, accidents, roadworks and slow moving traffic in alleppey", incidents: "1 Accidents this month" }],
+            mapCenter: [9.4981, 76.3388] 
+        },
+        "Kottayam": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [9.5916, 76.5222] 
+        },
+        "Idukki": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [9.9187, 77.1025] 
+        },
+        "Ernakulam": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [9.9816, 76.2999] 
+        },
+        "Thrissur": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [10.5276, 76.2144] 
+        },
+        "Palakkad": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [10.7867, 76.6548] 
+        },
+        "Malappuram": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [11.0734, 76.0748] 
+        },
+        "Kozhikode": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [11.2588, 75.7804] 
+        },
+        "Wayanad": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [11.6854, 76.1319] 
+        },
+        "Kannur": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [11.8745, 75.3704] 
+        },
+        "Kasaragod": { 
+            traffic: [{ location: "Town Center", status: "Moderate", color: "orange" }],
+            accidents: [{ location: "Main Square", incidents: "2 Accidents this month" }],
+            mapCenter: [12.4996, 74.9863] 
+        }
+    };
+
+    // Function to update page based on district selection
+    function updateDistrictData() {
+        const district = document.getElementById('district-select').value;
+        if (district === 'default') {
+            document.getElementById('traffic-data').innerHTML = 'Select a district to view traffic information.';
+            document.getElementById('accident-data').innerHTML = 'Select a district to view accident data.';
+            map.setView([10.8505, 76.2711], 7);
+            return;
+        }
+
+        const data = districtData[district];
+
+        // Update traffic and accident data
+        document.getElementById('traffic-data').innerHTML = data.traffic?.map(item => `
+            <div class="traffic-item" style="color: ${item.color};">
+                <span><i class="fas fa-car"></i> ${item.location}</span>
+                <span><strong>${item.status}</strong></span>
+            </div>
+        `).join('') || 'No traffic data available for this district.';
+
+        document.getElementById('accident-data').innerHTML = data.accidents?.map(item => `
+            <div class="accident-item">
+                <span><i class="fas fa-exclamation-circle" style="color: red;"></i> ${item.location}</span>
+                <span>${item.incidents}</span>
+            </div>
+        `).join('') || 'No accident data available for this district.';
+
+        // Update map view to the district's center
+        map.setView(data.mapCenter, 11);
+        map.eachLayer(layer => {
+            if (layer instanceof L.Circle) map.removeLayer(layer);
+        });
+
+        // Add markers for traffic status in the district
+        data.traffic.forEach(item => {
+            L.circle(data.mapCenter, {
+                color: item.color,
+                fillColor: item.color,
+                fillOpacity: 0.5,
+                radius: 500
+            }).addTo(map).bindPopup(`<b>${item.location}</b><br>Status: ${item.status}`);
+        });
+    }
+</script>
+
+</body>
+</html>
+

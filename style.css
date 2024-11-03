@@ -1,0 +1,147 @@
+body {
+    padding-top: 50px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-image: url("https://www.hseblog.com/wp-content/uploads/2023/05/Effects-Of-Road-Accidents-2.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+h1{
+    margin-top: 55px; 
+    font-size: 2em;
+    color: #040404;
+}
+header {
+    width: 100%;
+    background-color: #00796b;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.5em;
+}
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; 
+    padding: 10px 0;
+    display: flex;
+    justify-content: right; 
+    gap: 20px; 
+    z-index: 1000; 
+}
+nav a {
+    color: white; 
+    text-decoration: none; 
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s; 
+}
+nav a:hover {
+    background-color: #555; 
+}
+.content {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+}
+.section {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.section h2 {
+    color: #00796b;
+    margin-bottom: 10px;
+}
+.traffic-status, .accidents, .tips, .map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.traffic-item, .accident-item {
+    display: flex;
+    align-items: center;
+    background: #e0f7fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 0;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 1.1em;
+}
+.traffic-item i, .accident-item i {
+    margin-right: 10px;
+    font-size: 1.5em;
+}
+.map-container {
+    width: 100%;
+}
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+}
+.district-selector {
+    margin: 10px 0;
+    font-size: 1em;
+    padding: 8px;
+}
+form {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    width: 480px;
+    margin: 0px auto;
+    font-family: Arial, sans-serif;
+}
+label {
+    font-weight: bold;
+    margin: 5px 0 2px;
+    font-size: 0.9em;
+    color: #333;
+}
+
+select, input[type="number"] {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    align-items: center;
+    text-align: center;
+}
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+@media (max-width: 400px) {
+    form {
+        width: 90%;
+    }
+}

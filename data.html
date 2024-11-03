@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset</title>
+    <style>
+    body{
+         padding-top: 50px;
+        }
+    nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; 
+    padding: 10px 0;
+    display: flex;
+    justify-content: right; 
+    gap: 20px; 
+    z-index: 1000; 
+}
+nav a {
+    color: white; 
+    text-decoration: none; 
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s; 
+}
+nav a:hover {
+    background-color: #555; 
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/kome">Map</a>
+    </nav>
+    <div align="center">
+        <table>
+            <h1>
+                {% for table in tables %}
+                <h2>{{titles[loop.index]}}</h2>
+                {{table | safe}}
+                {% endfor %}
+            </h1>
+        </table>
+    </div>
+</body>
+</html>

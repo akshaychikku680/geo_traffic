@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+body {
+    padding-top: 50px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    background-image: url("https://img.freepik.com/free-vector/vehicle-crash-accident-car-park-lot-vector-traffic-wreck-insurance-collision-city-with-perspective-skyscraper-view-public-carpark-crush-concept-illustration-bumper-damage-background-scene_107791-23085.jpg?ga=GA1.1.865087938.1718168894&semt=ais_hybrid");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; 
+    padding: 10px 0;
+    display: flex;
+    justify-content: right; 
+    gap: 20px; 
+    z-index: 1000; 
+}
+nav a {
+    color: white; 
+    text-decoration: none; 
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s; 
+}
+nav a:hover {
+    background-color: #555; 
+}
+h1 {
+    margin-top: 80px; 
+    font-size: 2em;
+    color: #060606;
+}
+div{
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    width: 580px;
+    margin: 10px auto;
+    font-family: Arial, sans-serif;
+    height: 50vh;
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/home">Map</a>
+    </nav>
+    <div>
+        <h1>Prediction Result</h1><br>
+        <h2>The predicted traffic severity is: {{ prediction }}</h2>
+    </div>
+</body>
+</html>
